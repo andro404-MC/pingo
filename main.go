@@ -19,9 +19,9 @@ var (
 	trail       bool = false
 	inPolybar   bool = false
 
-	reCheckingDelay uint8
-	reTryingDelay   uint8
-	timeout         uint8
+	reCheckingDelay uint
+	reTryingDelay   uint
+	timeout         uint
 
 	red      string
 	green    string
@@ -195,9 +195,9 @@ func args() {
 		"turn on noneStop (use '$ killall pingo' for stop)")
 	flag.BoolVarP(&trail, "trail", "t", false, "trail (replace last line)")
 	flag.BoolVarP(&inPolybar, "polybar", "p", false, "polybar colors")
-	flag.Uint8Var(&timeout, "timeout", 200, "ping timeout in Milliseconds")
-	flag.Uint8Var(&reCheckingDelay, "recheck-delay", 8, "delay between rechecks in Seconds")
-	flag.Uint8Var(&reTryingDelay, "retry-delay", 1, "delay between retrys in Seconds")
+	flag.UintVar(&timeout, "timeout", 200, "ping timeout in Milliseconds")
+	flag.UintVar(&reCheckingDelay, "recheck-delay", 8, "delay between rechecks in Seconds")
+	flag.UintVar(&reTryingDelay, "retry-delay", 1, "delay between retrys in Seconds")
 	flag.Parse()
 }
 
