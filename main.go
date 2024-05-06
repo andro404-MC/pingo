@@ -13,28 +13,28 @@ import (
 var (
 	projectName string = "Pingo"
 
-	firstTry bool = true
-
+	firstTry    bool = true
 	isConnected bool = false
-	trail       bool = false
-	inPolybar   bool = false
-
-	reCheckingDelay uint
-	reTryingDelay   uint
-	timeout         uint
-
-	red      string
-	green    string
-	blue     string
-	none     string
-	pingIP   string
-	noneStop bool
 
 	mode string = "term"
 	// term     : full terminal text
 	// termMin  : (default) minimal terminal text
 	// ico      : icon mode
 	// notify   : notification mode
+
+	noTrail   bool
+	inPolybar bool
+	noneStop  bool
+
+	reCheckingDelay uint
+	reTryingDelay   uint
+	timeout         uint
+
+	red    string
+	green  string
+	blue   string
+	none   string
+	pingIP string
 )
 
 const (
@@ -181,7 +181,7 @@ func conectedMSG() {
 
 func RLL() {
 	// I KNOW THIS IS SO FUCKING DUMB
-	if trail {
+	if !noTrail {
 		fmt.Printf("\r                       ")
 		fmt.Printf("\r")
 	} else if !firstTry {
@@ -193,7 +193,7 @@ func args() {
 	flag.StringVarP(&mode, "mode", "m", "termMin", "Mode (term, termMin, ico, notify)")
 	flag.BoolVarP(&noneStop, "nonestop", "n", false,
 		"turn on noneStop (use '$ killall pingo' for stop)")
-	flag.BoolVarP(&trail, "trail", "t", false, "trail (replace last line)")
+	flag.BoolVar(&noTrail, "no-trail", false, "no trail (no replacing last line)")
 	flag.BoolVarP(&inPolybar, "polybar", "p", false, "polybar colors")
 	flag.UintVar(&timeout, "timeout", 200, "ping timeout in Milliseconds")
 	flag.UintVar(&reCheckingDelay, "recheck-delay", 8, "delay between rechecks in Seconds")
