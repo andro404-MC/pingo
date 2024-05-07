@@ -98,33 +98,21 @@ func sendNotification(amount, duration int, text string, isCritical bool) {
 }
 
 func pinger() bool {
-	resultChannel := make(chan bool)
-
-	go func() {
-		defer close(resultChannel)
-
-		pinger, err := probing.NewPinger("google.com")
-		if err != nil {
-			resultChannel <- false
-			return
-		}
-
-		pinger.Count = 1
-		err = pinger.Run()
-		if err != nil {
-			resultChannel <- false
-			return
-		}
-
-		resultChannel <- true
-	}()
-
-	select {
-	case result := <-resultChannel:
-		return result
-	case <-time.After(time.Millisecond * time.Duration(timeout)):
-		return false
+	pinger, err := probing.NewPinger(pingIP)
+	if err != nil {
+		panic(err)
 	}
+
+	pinger.Timeout = time.Millisecond * time.Duration(timeout)
+	pinger.Count = 1
+
+	err = pinger.Run()
+	if err != nil {
+		panic(err)
+	}
+
+	stats := pinger.Statistics()
+	return stats.PacketsRecv >= 1
 }
 
 func stableMSG() {

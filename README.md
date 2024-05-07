@@ -2,10 +2,10 @@
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/andro404-MC/ToGo.svg)](https://pkg.go.dev/github.com/andro404-MC/ToGo)
 
-A dead simple app that let you know when you that tells you when your internet is back.
+A dead simple app that let you know when your internet connection is back. (with polybar support)
 
 > [!WARNING]
-> the notification is probably only usable with dunst
+> the notification mode is probably only usable with dunst
 
 #### Why does this exist :
 
