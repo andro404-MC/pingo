@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"strings"
 	"time"
 
 	"github.com/prometheus-community/pro-bing"
@@ -17,8 +18,8 @@ var (
 	isConnected bool = false
 
 	mode string = "term"
-	// term     : full terminal text
-	// termMin  : (default) minimal terminal text
+	// term     : (default) full terminal text
+	// termMin  : minimal terminal text
 	// ico      : icon mode
 	// notify   : notification mode
 
@@ -29,6 +30,8 @@ var (
 	reCheckingDelay uint
 	reTryingDelay   uint
 	timeout         uint
+
+	leftAttempts uint8
 
 	red    string
 	green  string
@@ -56,21 +59,21 @@ func main() {
 	args()
 	env()
 	colorSetup()
-	leftAttempts := attempts
+	leftAttempts = attempts
 
 	for leftAttempts != 0 {
 		// try
-		isConnected = pinger()
+		isConnected, stats := pinger()
 		if isConnected {
 			if firstTry && !noneStop {
 				break
 			}
 			// Connected but need recheck
 			if !noneStop {
-				recheckMSG()
+				recheckMSG(stats)
 				leftAttempts--
 			} else {
-				conectedMSG()
+				conectedMSG(stats)
 			}
 
 			time.Sleep(time.Duration(reCheckingDelay) * time.Second)
@@ -97,10 +100,10 @@ func sendNotification(amount, duration int, text string, isCritical bool) {
 	}
 }
 
-func pinger() bool {
+func pinger() (bool, *probing.Statistics) {
 	pinger, err := probing.NewPinger(pingIP)
 	if err != nil {
-		panic(err)
+		return false, &probing.Statistics{}
 	}
 
 	pinger.Timeout = time.Millisecond * time.Duration(timeout)
@@ -108,69 +111,114 @@ func pinger() bool {
 
 	err = pinger.Run()
 	if err != nil {
-		panic(err)
+		return false, &probing.Statistics{}
 	}
 
 	stats := pinger.Statistics()
-	return stats.PacketsRecv >= 1
+	return stats.PacketsRecv >= 1, &*stats
 }
 
 func stableMSG() {
 	switch mode {
+	case "term":
+		RLL()
+		fmt.Printf(
+			" %s✓%s - Conection is stable - %d/%d \n",
+			green, none,
+			attempts, attempts,
+		)
+		break
 	case "termMin":
 		RLL()
 		fmt.Printf(" %s✓%s - Conection is stable \n", green, none)
+		break
 	case "ico":
 		RLL()
 		fmt.Printf(" %s●%s \n", green, none)
+		break
 	case "notify":
 		sendNotification(1, 5000, "Conection is stable", false)
+		break
 	}
 }
 
-func recheckMSG() {
+func recheckMSG(stats *probing.Statistics) {
 	switch mode {
+	case "term":
+		RLL()
+		fmt.Printf(
+			" %s◎%s - Connected re-checking - %dms - %d/%d ",
+			blue, none,
+			int64(stats.AvgRtt.Milliseconds()),
+			attempts-leftAttempts, attempts,
+		)
+		break
 	case "termMin":
 		RLL()
 		fmt.Printf(" %s◎%s - Connected re-checking ", blue, none)
+		break
 	case "ico":
 		RLL()
 		fmt.Printf(" %s◎%s ", blue, none)
+		break
 	case "notify":
 		sendNotification(1, 5000, "Connected re-checking", false)
+		break
 	}
 }
 
 func notconectedMSG() {
 	switch mode {
+	case "term":
+		RLL()
+		fmt.Printf(
+			" %s●%s - Not connected - %sReset%s ",
+			red, none, red, none,
+		)
+		break
 	case "termMin":
 		RLL()
 		fmt.Printf(" %s●%s - Not connected ", red, none)
+		break
 	case "ico":
 		RLL()
 		fmt.Printf(" %s●%s ", red, none)
+		break
 	case "notify":
 		sendNotification(1, 1000, "Not connected", true)
+		break
 	}
 }
 
-func conectedMSG() {
+func conectedMSG(stats *probing.Statistics) {
 	switch mode {
+	case "term":
+		RLL()
+		fmt.Printf(
+			" %s●%s - Connected - %dms ",
+			green, none,
+			int64(stats.AvgRtt.Milliseconds()),
+		)
+		break
 	case "termMin":
 		RLL()
 		fmt.Printf(" %s●%s - Connected ", green, none)
+		break
 	case "ico":
 		RLL()
 		fmt.Printf(" %s●%s ", green, none)
+		break
 	case "notify":
 		sendNotification(1, 1000, "Not connected", true)
+		break
 	}
 }
 
 func RLL() {
-	// I KNOW THIS IS SO FUCKING DUMB
+	// TODO better implementation
+	// I KNOW THIS IS SO FUCKING DUMB but its working
 	if !noTrail {
-		fmt.Printf("\r                       ")
+		fmt.Printf("\r" + strings.Repeat(" ", 50))
 		fmt.Printf("\r")
 	} else if !firstTry {
 		fmt.Print("\n")
@@ -178,7 +226,7 @@ func RLL() {
 }
 
 func args() {
-	flag.StringVarP(&mode, "mode", "m", "termMin", "Mode (term, termMin, ico, notify)")
+	flag.StringVarP(&mode, "mode", "m", "term", "Mode (term, termMin, ico, notify)")
 	flag.BoolVarP(&noneStop, "nonestop", "n", false,
 		"turn on noneStop (use '$ killall pingo' for stop)")
 	flag.BoolVar(&noTrail, "no-trail", false, "no trail (no replacing last line)")
