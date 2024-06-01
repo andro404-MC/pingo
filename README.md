@@ -1,8 +1,8 @@
-# Pingo
+# Pingo ![pass](https://github.com/andro404-MC/quigo-gui/actions/workflows/test.yml/badge.svg) ![GitHub License](https://img.shields.io/github/license/andro404-MC/quigo)
 
-[![Go Reference](https://pkg.go.dev/badge/github.com/andro404-MC/ToGo.svg)](https://pkg.go.dev/github.com/andro404-MC/ToGo)
+bspc rule -a Quigo state=floating
 
-A dead simple app that let you know when your internet connection is back. (with polybar support)
+A dead simple app that let you know If you are connected . (with polybar support)
 
 > [!WARNING]
 > the notification mode is probably only usable with dunst
@@ -20,6 +20,8 @@ and yea I just kept messing with it once a while and its public now. :)
 Nothing unless :
 
 `libnotify` : for notification support.
+
+`polybar` : duh, of course if you want to use it in polybar you will need polybar.
 
 `go` : if you are going to build from source.
 
@@ -40,17 +42,26 @@ $ go install .
 
 ## Usage :
 
-If go path is setuped correctly you can just run the terminal version :
+To run :
 
 ```
 $ pingo
 ```
 
-and for the notification version :
+Arguments :
 
-```
-$ pingo -n
-```
+- `-m`,`--mode` : Mode (term, termMin, ico, notify) (default "term")
+
+- `--no-trail` : no trail (no replacing last line)
+
+- `-n`,`--nonestop` : turn on noneStop (use '$ killall pingo' for stop)
+
+- `-p`,`--polybar` : polybar colors
+
+- `--recheck-delay` : delay between rechecks in Seconds (default 8)
+
+- `--retry-delay` : delay between retrys in Seconds (default 1)
+- `--timeout` : ping timeout in Milliseconds (default 200)
 
 The default ping target is google.com but it can be changed using the environment variable `PINGOIP` :
 
@@ -60,5 +71,4 @@ $ PINGOIP=gnu.org pingo
 
 ## Todo :
 
-- Optional notification sound
-- Compleat the terminal experience
+None for now :)

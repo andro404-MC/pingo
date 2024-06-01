@@ -122,11 +122,19 @@ func stableMSG() {
 	switch mode {
 	case "term":
 		RLL()
-		fmt.Printf(
-			" %s✓%s - Conection is stable - %d/%d \n",
-			green, none,
-			attempts, attempts,
-		)
+		if firstTry {
+			fmt.Printf(
+				" %s✓%s - Conection is stable - %sConnected form the first try%s\n",
+				green, none,
+				green, none,
+			)
+		} else {
+			fmt.Printf(
+				" %s✓%s - Conection is stable - %d/%d \n",
+				green, none,
+				attempts, attempts,
+			)
+		}
 		break
 	case "termMin":
 		RLL()
@@ -215,8 +223,7 @@ func conectedMSG(stats *probing.Statistics) {
 }
 
 func RLL() {
-	// TODO better implementation
-	// I KNOW THIS IS SO FUCKING DUMB but its working
+	// HACK: I KNOW THIS IS SO FUCKING DUMB but its working
 	if !noTrail {
 		fmt.Printf("\r" + strings.Repeat(" ", 50))
 		fmt.Printf("\r")
@@ -231,7 +238,7 @@ func args() {
 		"turn on noneStop (use '$ killall pingo' for stop)")
 	flag.BoolVar(&noTrail, "no-trail", false, "no trail (no replacing last line)")
 	flag.BoolVarP(&inPolybar, "polybar", "p", false, "polybar colors")
-	flag.UintVar(&timeout, "timeout", 200, "ping timeout in Milliseconds")
+	flag.UintVar(&timeout, "timeout", 300, "ping timeout in Milliseconds")
 	flag.UintVar(&reCheckingDelay, "recheck-delay", 8, "delay between rechecks in Seconds")
 	flag.UintVar(&reTryingDelay, "retry-delay", 1, "delay between retrys in Seconds")
 	flag.Parse()
