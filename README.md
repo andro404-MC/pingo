@@ -54,7 +54,7 @@ Arguments :
 
 - `--no-trail` : no trail (no replacing last line)
 
-- `-n`,`--nonestop` : turn on noneStop (use '$ killall pingo' for stop)
+- `-n`,`--nonestop` : turn on noneStop (use `$ killall pingo` for stop)
 
 - `-p`,`--polybar` : polybar colors
 
