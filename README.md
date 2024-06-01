@@ -1,4 +1,4 @@
-# Pingo ![pass](https://github.com/andro404-MC/quigo-gui/actions/workflows/test.yml/badge.svg) ![GitHub License](https://img.shields.io/github/license/andro404-MC/pingo)
+# Pingo ![pass](https://github.com/andro404-MC/pingo/actions/workflows/test.yml/badge.svg) ![GitHub License](https://img.shields.io/github/license/andro404-MC/pingo)
 
 bspc rule -a Quigo state=floating
 
