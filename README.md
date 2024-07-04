@@ -1,7 +1,5 @@
 # Pingo ![pass](https://github.com/andro404-MC/pingo/actions/workflows/test.yml/badge.svg) ![GitHub License](https://img.shields.io/github/license/andro404-MC/pingo)
 
-bspc rule -a Quigo state=floating
-
 A dead simple app that let you know If you are connected . (with polybar support)
 
 > [!WARNING]
