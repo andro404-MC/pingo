@@ -28,7 +28,7 @@ Nothing unless :
 > You need a to have `GOPATH` added to `PATH`
 
 ```
-$ git clone https://github.com/untemi/pingo
+$ git clone https://github.com/andro404-MC/pingo
 $ cd pingo
 
 // Run
