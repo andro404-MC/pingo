@@ -24,7 +24,8 @@ var (
 	// notify   : notification mode
 
 	noTrail   bool
-	inPolybar bool
+	isPolybar bool
+	isWaybar  bool
 	noneStop  bool
 
 	reCheckingDelay uint
@@ -53,6 +54,11 @@ const (
 	greenP string = "%{F#a9c474}"
 	blueP  string = "%{F#0b79fe}"
 	noneP  string = "%{F-}"
+
+	redW   string = "<span color='#c55555'>"
+	greenW string = "<span color='#a9c474'>"
+	blueW  string = "<span color='#0b79fe'>"
+	noneW  string = "</span>"
 )
 
 func main() {
@@ -237,7 +243,8 @@ func args() {
 	flag.BoolVarP(&noneStop, "nonestop", "n", false,
 		"turn on noneStop (use '$ killall pingo' for stop)")
 	flag.BoolVar(&noTrail, "no-trail", false, "no trail (no replacing last line)")
-	flag.BoolVarP(&inPolybar, "polybar", "p", false, "polybar colors")
+	flag.BoolVarP(&isPolybar, "polybar", "p", false, "polybar colors")
+	flag.BoolVarP(&isWaybar, "waybar", "w", false, "waybar colors")
 	flag.UintVar(&timeout, "timeout", 300, "ping timeout in Milliseconds")
 	flag.UintVar(&reCheckingDelay, "recheck-delay", 8, "delay between rechecks in Seconds")
 	flag.UintVar(&reTryingDelay, "retry-delay", 1, "delay between retrys in Seconds")
@@ -252,8 +259,10 @@ func env() {
 }
 
 func colorSetup() {
-	if inPolybar {
+	if isPolybar {
 		red, blue, green, none = redP, blueP, greenP, noneP
+	} else if isWaybar {
+		red, blue, green, none = redW, blueW, greenW, noneW
 	} else {
 		red, blue, green, none = redB, blueB, greenB, noneB
 	}
